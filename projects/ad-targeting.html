@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>광고 타겟팅 유효성 분석 · 유진희</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: #fafafa; color: #1a1a1a; line-height: 1.7;
+    }
+    a { color: inherit; text-decoration: none; }
+    nav {
+      background: white; border-bottom: 0.5px solid #e8e8e8;
+      padding: 0 40px; display: flex; align-items: center;
+      justify-content: space-between; height: 56px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-name { font-size: 15px; font-weight: 500; color: #1a1a1a; }
+    .nav-back { font-size: 13px; color: #888; }
+    .nav-back:hover { color: #1a1a1a; }
+    .hero {
+      background: white; border-bottom: 0.5px solid #e8e8e8;
+      padding: 56px 40px 48px; max-width: 760px; margin: 0 auto;
+    }
+    .breadcrumb { font-size: 12px; color: #aaa; margin-bottom: 20px; display: flex; align-items: center; gap: 6px; }
+    .breadcrumb a { color: #888; }
+    .breadcrumb a:hover { color: #0F6E56; }
+    .badge { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: 10px; margin-bottom: 14px; background: #E1F5EE; color: #0F6E56; }
+    .hero h1 { font-size: 24px; font-weight: 500; margin-bottom: 10px; line-height: 1.4; }
+    .hero .subtitle { font-size: 14px; color: #666; margin-bottom: 24px; }
+    .meta-row { display: flex; gap: 24px; flex-wrap: wrap; padding-top: 20px; border-top: 0.5px solid #e8e8e8; }
+    .meta-label { font-size: 11px; color: #aaa; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .meta-value { font-size: 13px; color: #333; font-weight: 500; }
+    .content { max-width: 760px; margin: 0 auto; padding: 48px 40px; }
+    .section { margin-bottom: 48px; }
+    .section-title { font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.8px; color: #aaa; margin-bottom: 16px; }
+    p { font-size: 15px; color: #333; line-height: 1.75; margin-bottom: 14px; }
+    p:last-child { margin-bottom: 0; }
+    .highlight-box {
+      background: #E1F5EE; border-left: 3px solid #0F6E56;
+      border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;
+    }
+    .highlight-box p { color: #085041; margin-bottom: 0; font-size: 14px; }
+    .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0; }
+    .stat-card { background: white; border: 0.5px solid #e8e8e8; border-radius: 10px; padding: 16px; text-align: center; }
+    .stat-label { font-size: 11px; color: #aaa; margin-bottom: 6px; }
+    .stat-value { font-size: 20px; font-weight: 500; color: #1a1a1a; }
+    .stat-sub { font-size: 11px; color: #888; margin-top: 4px; }
+    .method-list { list-style: none; padding: 0; margin: 16px 0; }
+    .method-list li { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid #f0f0f0; font-size: 14px; color: #333; }
+    .method-list li:last-child { border-bottom: none; }
+    .method-num { min-width: 22px; height: 22px; background: #E1F5EE; color: #0F6E56; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; margin-top: 1px; }
+    .axis-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 16px 0; }
+    .axis-card { background: white; border: 0.5px solid #e8e8e8; border-radius: 10px; padding: 16px; }
+    .axis-title { font-size: 12px; font-weight: 500; color: #0F6E56; margin-bottom: 6px; }
+    .axis-desc { font-size: 13px; color: #555; line-height: 1.6; }
+    .takeaway { background: white; border: 0.5px solid #e8e8e8; border-radius: 12px; padding: 24px; margin-top: 16px; }
+    .takeaway-title { font-size: 13px; font-weight: 500; color: #1a1a1a; margin-bottom: 8px; }
+    .takeaway p { font-size: 14px; color: #555; }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .tag { font-size: 12px; padding: 4px 12px; border-radius: 4px; background: #f5f5f5; color: #555; border: 0.5px solid #e8e8e8; }
+    footer { border-top: 0.5px solid #e8e8e8; background: white; padding: 24px 40px; text-align: center; font-size: 13px; color: #aaa; }
+    footer a { color: #0F6E56; }
+    @media (max-width: 600px) {
+      nav, .hero, .content { padding-left: 20px; padding-right: 20px; }
+      .stat-grid, .axis-grid { grid-template-columns: 1fr 1fr; }
+      .hero h1 { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="nav-name">유진희</a>
+  <a href="../index.html" class="nav-back">← 포트폴리오로 돌아가기</a>
+</nav>
+
+<div class="hero">
+  <div class="breadcrumb">
+    <a href="../index.html">포트폴리오</a>
+    <span>›</span>
+    <span>광고 타겟팅 유효성 분석</span>
+  </div>
+  <div class="badge">통계 분석 · 광고</div>
+  <h1>self-serve 광고 플랫폼의 타겟팅 유효성 분석:<br>인구통계 및 지역 기반 세그먼테이션 설계</h1>
+  <p class="subtitle">광고주 자율 타겟팅 옵션 도입을 위해 연령·성별·지역 3개 축의 타겟팅 유효성을 통계적으로 검증한 분석 프로젝트</p>
+  <div class="meta-row">
+    <div class="meta-item">
+      <div class="meta-label">유형</div>
+      <div class="meta-value">실무 분석</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">기간</div>
+      <div class="meta-value">2026</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">소속</div>
+      <div class="meta-value">Nudge Healthcare</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="section">
+    <p class="section-title">배경</p>
+    <p>모바일 광고 플랫폼에서 광고주가 직접 타겟 그룹을 설정하는 self-serve 타겟팅 기능 도입을 검토하게 되었다. 이를 위해 연령대, 성별, 지역의 3개 축이 실제로 광고 성과(CTR)에 유의미한 차이를 만드는지를 데이터 기반으로 검증할 필요가 있었다.</p>
+    <p>단순히 그룹 간 CTR 차이를 관찰하는 것을 넘어, 헤비클리커 편향 등 혼재 변수를 통제하고 통계적으로 유효한 타겟팅 근거를 수립하는 것이 핵심 과제였다.</p>
+    <div class="highlight-box">
+      <p>분석 설계부터 통계 검증, 최종 제안까지 전 과정을 단독으로 수행하였으며, 결과는 타겟팅 옵션 도입 의사결정의 근거 자료로 활용되었다.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">분석 대상 타겟팅 축</p>
+    <div class="axis-grid">
+      <div class="axis-card">
+        <div class="axis-title">연령대</div>
+        <div class="axis-desc">채널별 노출 볼륨을 기반으로 연령 구간을 설계하고, 카테고리별 CTR 히트맵으로 패턴을 시각화</div>
+      </div>
+      <div class="axis-card">
+        <div class="axis-title">성별</div>
+        <div class="axis-desc">성별에 따른 카테고리별 CTR 차이를 검정하고, 효과 크기를 통해 실질적 유의미성 평가</div>
+      </div>
+      <div class="axis-card">
+        <div class="axis-title">지역</div>
+        <div class="axis-desc">시·군·구 단위 거주자 vs 비거주자 CTR 차이를 분석하여 지역 타겟팅의 실효성 검증</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">분석 방법</p>
+    <ul class="method-list">
+      <li>
+        <div class="method-num">1</div>
+        <div><strong>채널 선별 및 카테고리 분류</strong> — 전체 채널 중 분석 적합 채널을 선별하고, 콘텐츠 특성 기반으로 카테고리를 분류하여 분석 모수를 정의하였다.</div>
+      </li>
+      <li>
+        <div class="method-num">2</div>
+        <div><strong>카이제곱 검정</strong> — 연령대·성별·지역 그룹 간 CTR 차이가 통계적으로 유의한지 검정하였다.</div>
+      </li>
+      <li>
+        <div class="method-num">3</div>
+        <div><strong>Cohen's h (효과 크기)</strong> — 통계적 유의성을 넘어 실질적 차이가 있는지 효과 크기를 산출하여, 표본 크기에 의한 인위적 유의성을 배제하였다.</div>
+      </li>
+      <li>
+        <div class="method-num">4</div>
+        <div><strong>헤비클리커 편향 검증</strong> — 일부 과도한 클릭 유저가 CTR 결과를 왜곡할 가능성을 확인하고, 편향 여부를 별도로 검증하였다.</div>
+      </li>
+      <li>
+        <div class="method-num">5</div>
+        <div><strong>지역 타겟팅 유효성 검정</strong> — 시·군·구 단위로 거주자와 비거주자 간 CTR 차이를 분석하여 지역 기반 타겟팅의 실효성을 검증하였다.</div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <p class="section-title">주요 결과</p>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-label">연령대 타겟팅</div>
+        <div class="stat-value">유효</div>
+        <div class="stat-sub">카테고리별 유의미한 차이 확인</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">성별 타겟팅</div>
+        <div class="stat-value">유효</div>
+        <div class="stat-sub">효과 크기 검증으로 실질성 확인</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">지역 타겟팅</div>
+        <div class="stat-value">유효</div>
+        <div class="stat-sub">거주자 CTR이 비거주자 대비 높음</div>
+      </div>
+    </div>
+    <p>3개 타겟팅 축 모두 통계적으로 유의하며 실질적 효과 크기가 확인되어, 타겟팅 옵션으로 도입하는 방향을 제안하였다.</p>
+  </div>
+
+  <div class="section">
+    <p class="section-title">시사점</p>
+    <div class="takeaway">
+      <div class="takeaway-title">분석 설계의 엄밀성</div>
+      <p>단순 CTR 비교를 넘어 카이제곱 검정과 Cohen's h를 함께 적용함으로써, 표본 크기가 클 때 통계적 유의성만으로 과장될 수 있는 효과를 실질적 수준에서 평가하였다. 헤비클리커 편향도 별도로 검증하여 분석의 신뢰성을 높였다.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">사용 기술 및 방법론</p>
+    <div class="tag-row">
+      <span class="tag">Python</span>
+      <span class="tag">BigQuery</span>
+      <span class="tag">카이제곱 검정</span>
+      <span class="tag">Cohen's h</span>
+      <span class="tag">세그먼테이션</span>
+      <span class="tag">CTR 분석</span>
+      <span class="tag">지역 분석</span>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p><a href="../index.html">← 포트폴리오로 돌아가기</a> &nbsp;·&nbsp; wlgmldb418@korea.ac.kr</p>
+</footer>
+
+</body>
+</html>

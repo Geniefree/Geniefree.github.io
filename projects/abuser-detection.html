@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>어뷰저 탐지 로직 설계 · 유진희</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: #fafafa; color: #1a1a1a; line-height: 1.7;
+    }
+    a { color: inherit; text-decoration: none; }
+    nav {
+      background: white; border-bottom: 0.5px solid #e8e8e8;
+      padding: 0 40px; display: flex; align-items: center;
+      justify-content: space-between; height: 56px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-name { font-size: 15px; font-weight: 500; }
+    .nav-back { font-size: 13px; color: #888; }
+    .nav-back:hover { color: #1a1a1a; }
+    .hero {
+      background: white; border-bottom: 0.5px solid #e8e8e8;
+      padding: 56px 40px 48px; max-width: 760px; margin: 0 auto;
+    }
+    .breadcrumb { font-size: 12px; color: #aaa; margin-bottom: 20px; display: flex; align-items: center; gap: 6px; }
+    .breadcrumb a { color: #888; }
+    .breadcrumb a:hover { color: #993C1D; }
+    .badge { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: 10px; margin-bottom: 14px; background: #FAECE7; color: #993C1D; }
+    .hero h1 { font-size: 24px; font-weight: 500; margin-bottom: 10px; line-height: 1.4; }
+    .hero .subtitle { font-size: 14px; color: #666; margin-bottom: 24px; }
+    .meta-row { display: flex; gap: 24px; flex-wrap: wrap; padding-top: 20px; border-top: 0.5px solid #e8e8e8; }
+    .meta-label { font-size: 11px; color: #aaa; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .meta-value { font-size: 13px; color: #333; font-weight: 500; }
+    .content { max-width: 760px; margin: 0 auto; padding: 48px 40px; }
+    .section { margin-bottom: 48px; }
+    .section-title { font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.8px; color: #aaa; margin-bottom: 16px; }
+    p { font-size: 15px; color: #333; line-height: 1.75; margin-bottom: 14px; }
+    p:last-child { margin-bottom: 0; }
+    .highlight-box {
+      background: #FAECE7; border-left: 3px solid #993C1D;
+      border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;
+    }
+    .highlight-box p { color: #712B13; margin-bottom: 0; font-size: 14px; }
+    .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0; }
+    .stat-card { background: white; border: 0.5px solid #e8e8e8; border-radius: 10px; padding: 16px; text-align: center; }
+    .stat-label { font-size: 11px; color: #aaa; margin-bottom: 6px; }
+    .stat-value { font-size: 20px; font-weight: 500; color: #1a1a1a; }
+    .stat-sub { font-size: 11px; color: #888; margin-top: 4px; }
+    .method-list { list-style: none; padding: 0; margin: 16px 0; }
+    .method-list li { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid #f0f0f0; font-size: 14px; color: #333; }
+    .method-list li:last-child { border-bottom: none; }
+    .method-num { min-width: 22px; height: 22px; background: #FAECE7; color: #993C1D; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; margin-top: 1px; }
+    .type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+    .type-card { background: white; border: 0.5px solid #e8e8e8; border-radius: 10px; padding: 18px; }
+    .type-title { font-size: 13px; font-weight: 500; color: #993C1D; margin-bottom: 8px; }
+    .type-list { list-style: none; padding: 0; }
+    .type-list li { font-size: 13px; color: #555; padding: 3px 0; display: flex; gap: 6px; }
+    .type-list li::before { content: "·"; color: #D85A30; }
+    .takeaway { background: white; border: 0.5px solid #e8e8e8; border-radius: 12px; padding: 24px; margin-top: 16px; }
+    .takeaway-title { font-size: 13px; font-weight: 500; color: #1a1a1a; margin-bottom: 8px; }
+    .takeaway p { font-size: 14px; color: #555; }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .tag { font-size: 12px; padding: 4px 12px; border-radius: 4px; background: #f5f5f5; color: #555; border: 0.5px solid #e8e8e8; }
+    footer { border-top: 0.5px solid #e8e8e8; background: white; padding: 24px 40px; text-align: center; font-size: 13px; color: #aaa; }
+    footer a { color: #993C1D; }
+    @media (max-width: 600px) {
+      nav, .hero, .content { padding-left: 20px; padding-right: 20px; }
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+      .type-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="nav-name">유진희</a>
+  <a href="../index.html" class="nav-back">← 포트폴리오로 돌아가기</a>
+</nav>
+
+<div class="hero">
+  <div class="breadcrumb">
+    <a href="../index.html">포트폴리오</a>
+    <span>›</span>
+    <span>어뷰저 탐지 로직 설계</span>
+  </div>
+  <div class="badge">이상 탐지 · 어뷰징 분석</div>
+  <h1>글로벌 캐시워크 어뷰저 탐지 로직 설계:<br>다중 신호 기반 이상 계정 분류 및 대응</h1>
+  <p class="subtitle">지표 급증 현상의 원인을 어뷰저 유형별로 분류하고, 탐지 로직을 설계하여 대규모 이상 계정을 식별한 분석 프로젝트</p>
+  <div class="meta-row">
+    <div class="meta-item">
+      <div class="meta-label">유형</div>
+      <div class="meta-value">실무 분석</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">기간</div>
+      <div class="meta-value">2026</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">소속</div>
+      <div class="meta-value">Nudge Healthcare</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="section">
+    <p class="section-title">배경</p>
+    <p>특정 시점을 기점으로 앱 신규 설치, 보상형 광고 포인트 적립, 구매 건수 등 주요 지표가 동시에 급증하는 현상이 관측되었다. 기존 탐지 지표에는 이상이 없어, 기존 로직이 탐지하지 못하는 새로운 어뷰징 패턴이 발생한 것으로 판단되었다.</p>
+    <p>이 프로젝트는 선임 분석가로부터 업무를 인계받아 단독으로 수행하였으며, 기획서 작성부터 탐지 로직 설계, 경영진 보고까지 전 과정을 담당하였다.</p>
+    <div class="highlight-box">
+      <p>기존 탐지 지표로는 잡히지 않는 어뷰저를 새롭게 발굴하는 것이 핵심 과제였다. 이메일 도메인 패턴, 행동 신호, 기기 정보 등 다중 신호를 결합하여 어뷰저 유형을 분류하고 각각에 맞는 탐지 로직을 설계하였다.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">어뷰저 유형 분류</p>
+    <div class="type-grid">
+      <div class="type-card">
+        <div class="type-title">유형 A — 추천코드 어뷰저</div>
+        <ul class="type-list">
+          <li>비정상 이메일 도메인 사용</li>
+          <li>초대받은 유저의 차단율 높음</li>
+          <li>광고 노출 지표 비정상</li>
+          <li>일부 비정상 접속 환경 집중</li>
+        </ul>
+      </div>
+      <div class="type-card">
+        <div class="type-title">유형 B — 보상형 광고 어뷰저</div>
+        <ul class="type-list">
+          <li>특정 날짜 집중 가입 후 동시 활동</li>
+          <li>동일 미션 집단적 수행 패턴</li>
+          <li>일별 포인트·이벤트 수 비정상</li>
+          <li>주요 접속 환경 일부 겹침</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">분석 방법</p>
+    <ul class="method-list">
+      <li>
+        <div class="method-num">1</div>
+        <div><strong>비정상 이메일 도메인 발굴</strong> — 차단율이 비정상적으로 높은 이메일 도메인을 식별하고, 외부 이메일 검증 서비스를 통해 일회성·임시 도메인 여부를 확인하였다. 신규 생성 도메인과 기존 어뷰저 도메인을 분리하여 대응 방안을 차별화하였다.</div>
+      </li>
+      <li>
+        <div class="method-num">2</div>
+        <div><strong>다계정 탐지 로직 검증</strong> — 기존 탐지 이벤트에 오류로 인한 과소집계 이슈가 있음을 발견하고, 수정된 기준으로 재산출하여 실제 다계정 운영 규모를 확인하였다.</div>
+      </li>
+      <li>
+        <div class="method-num">3</div>
+        <div><strong>KPI 회복 검증</strong> — 두 어뷰저 집단을 제거한 후 보상형 광고 포인트·구매 건수·신규 앱 설치 등 주요 지표가 정상 범위로 회귀하는지 확인하여 어뷰저 집단이 급증 현상의 주요 원인임을 검증하였다.</div>
+      </li>
+      <li>
+        <div class="method-num">4</div>
+        <div><strong>로깅 구조 개선 제안</strong> — 어뷰저 제거 후에도 일부 잔여 증가분이 남아, 앱 이벤트 로그가 수집되지 않는 집단의 정체 파악을 위한 로깅 구조 개선을 신규 제안하였다.</div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <p class="section-title">주요 결과</p>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-label">탐지 총계 (중복 제거)</div>
+        <div class="stat-value">16,132명</div>
+        <div class="stat-sub">비정상 이메일 + 다계정 운영</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">KPI 회복</div>
+        <div class="stat-value">완전 회귀</div>
+        <div class="stat-sub">보상형 광고·구매 정상 범위 복귀</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">후속 조치</div>
+        <div class="stat-value">배포 완료</div>
+        <div class="stat-sub">다계정 탐지 로직 강화 배포</div>
+      </div>
+    </div>
+    <p>두 어뷰저 집단 제거 시 보상형 광고 포인트는 장기 평균 수준으로 완전 회귀하고, 구매 건수도 정상 성장 범위 내로 안착하는 것이 확인되었다. 분석 기획서부터 경영진 보고문까지 직접 작성하여 대표에게 보고하였다.</p>
+  </div>
+
+  <div class="section">
+    <p class="section-title">시사점</p>
+    <div class="takeaway">
+      <div class="takeaway-title">탐지 로직 설계의 어려움</div>
+      <p>기존 탐지 기준에 걸리지 않는 어뷰저를 발굴하는 과정에서, 단일 신호가 아닌 이메일 도메인·행동 지표·기기 정보·IP 등 다중 신호를 결합하는 방식이 효과적임을 확인하였다. 특히 오탐(False Positive)을 최소화하면서 어뷰저를 잡아내는 기준 설계가 핵심이었다.</p>
+    </div>
+    <div class="takeaway" style="margin-top: 12px;">
+      <div class="takeaway-title">업무 인계 및 단독 수행</div>
+      <p>선임 분석가로부터 업무를 인계받아 기획서 작성, EDA, 로직 설계, 보고서 작성, 경영진 보고까지 전 과정을 단독으로 수행하였다. 분석 과정에서 발견한 다계정 탐지 과소집계 이슈는 추가적인 로직 개선으로 이어졌다.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">사용 기술 및 방법론</p>
+    <div class="tag-row">
+      <span class="tag">Python</span>
+      <span class="tag">BigQuery</span>
+      <span class="tag">이메일 검증 API</span>
+      <span class="tag">EDA</span>
+      <span class="tag">이상 탐지</span>
+      <span class="tag">다중 신호 분류</span>
+      <span class="tag">KPI 분석</span>
+      <span class="tag">코호트 분석</span>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p><a href="../index.html">← 포트폴리오로 돌아가기</a> &nbsp;·&nbsp; wlgmldb418@korea.ac.kr</p>
+</footer>
+
+</body>
+</html>
