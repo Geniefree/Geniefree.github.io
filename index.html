@@ -42,12 +42,11 @@
       margin: 0 auto;
     }
     .avatar {
-      width: 56px; height: 56px;
+      width: 80px; height: 80px;
       border-radius: 50%;
-      background: #EEEDFE;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px; font-weight: 500; color: #534AB7;
+      object-fit: cover;
       margin-bottom: 20px;
+      border: 0.5px solid #e8e8e8;
     }
     .hero h1 { font-size: 28px; font-weight: 500; margin-bottom: 6px; }
     .hero .subtitle { font-size: 15px; color: #666; margin-bottom: 20px; }
@@ -182,7 +181,7 @@
 
 <!-- 히어로 -->
 <div class="hero">
-  <div class="avatar">유</div>
+  <img src="profile_image.jpeg" alt="유진희 프로필 사진" class="avatar" />
   <h1>유진희</h1>
   <p class="subtitle">Data Analyst · 고려대학교 통계학과 석사과정</p>
   <div class="tags">
@@ -194,7 +193,7 @@
     <span class="tag">이상 탐지</span>
   </div>
   <div class="hero-links">
-    <a href="mailto:wlgmldb418@korea.ac.kr">이메일</a>
+    <a href="mailto:wlgmldb418@korea.ac.kr">wlgmldb418@korea.ac.kr</a>
     <a href="https://github.com/Geniefree" target="_blank">GitHub</a>
   </div>
 </div>
