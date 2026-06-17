@@ -89,13 +89,16 @@
     /* ── 프로젝트 카드 ── */
     .cards { display: flex; flex-direction: column; gap: 12px; }
     .card {
+      display: block;
       background: white;
       border: 0.5px solid #e8e8e8;
       border-radius: 12px;
       padding: 20px 24px;
       transition: border-color 0.15s;
+      cursor: pointer;
+      color: inherit;
     }
-    .card:hover { border-color: #c8c8c8; }
+    .card:hover { border-color: #534AB7; }
     .card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 6px; }
     .card-title { font-size: 15px; font-weight: 500; color: #1a1a1a; }
     .card-badge {
@@ -201,7 +204,7 @@
   <p class="section-label">프로젝트</p>
   <div class="cards">
 
-    <div class="card">
+    <a href="projects/ad-personalization.html" class="card">
       <div class="card-header">
         <span class="card-title">광고 개인화 추천 가중치 분석</span>
         <span class="card-badge badge-purple">추천 시스템</span>
@@ -213,9 +216,9 @@
         <span class="card-tag">A/B 시뮬레이션</span>
         <span class="card-tag">개인화 추천</span>
       </div>
-    </div>
+    </a>
 
-    <div class="card">
+    <a href="projects/ad-targeting.html" class="card">
       <div class="card-header">
         <span class="card-title">광고 타겟팅 유효성 분석</span>
         <span class="card-badge badge-teal">통계 분석</span>
@@ -227,14 +230,14 @@
         <span class="card-tag">세그먼테이션</span>
         <span class="card-tag">효과 크기 분석</span>
       </div>
-    </div>
+    </a>
 
-    <div class="card">
+    <a href="projects/abuser-detection.html" class="card">
       <div class="card-header">
         <span class="card-title">어뷰저 탐지 로직 설계</span>
         <span class="card-badge badge-coral">이상 탐지</span>
       </div>
-      <p class="card-desc">다중 행동 신호(광고 지표, 이메일 패턴, 기기 정보 등)를 결합하여 이상 계정을 유형별로 분류하고, 오탐을 최소화하는 차단 로직을 설계하여 경영진에 보고하였다.</p>
+      <p class="card-desc">다중 행동 신호를 결합하여 이상 계정을 유형별로 분류하고, 오탐을 최소화하는 차단 로직을 설계하여 경영진에 보고하였다.</p>
       <div class="card-tags">
         <span class="card-tag">Python</span>
         <span class="card-tag">BigQuery</span>
@@ -242,37 +245,36 @@
         <span class="card-tag">이상 탐지</span>
         <span class="card-tag">로직 설계</span>
       </div>
-    </div>
+    </a>
 
-    <div class="card">
+    <a href="projects/blacklist.html" class="card">
       <div class="card-header">
         <span class="card-title">차단 로직 정밀도 개선</span>
         <span class="card-badge badge-coral">이상 탐지</span>
       </div>
-      <p class="card-desc">기존 차단 로직이 정상 유저를 의도치 않게 차단하는 문제를 발견하고, 행동 지표 기반 EDA를 통해 어뷰저/정상 유저를 분리하는 개선된 로직을 설계하였다. OS별 기준 차등 적용 및 국가별 위험도 분류를 포함한다.</p>
+      <p class="card-desc">기존 차단 로직이 정상 유저를 의도치 않게 차단하는 문제를 발견하고, 행동 지표 기반 EDA를 통해 어뷰저/정상 유저를 분리하는 개선된 로직을 설계하였다.</p>
       <div class="card-tags">
         <span class="card-tag">Python</span>
         <span class="card-tag">EDA</span>
         <span class="card-tag">로직 최적화</span>
         <span class="card-tag">False Positive 감소</span>
       </div>
-    </div>
+    </a>
 
-    <div class="card">
+    <a href="projects/dashboard.html" class="card">
       <div class="card-header">
         <span class="card-title">모니터링 대시보드 구축</span>
         <span class="card-badge badge-blue">데이터 엔지니어링</span>
       </div>
-      <p class="card-desc">SQL 기반 집계 쿼리를 설계하고 Metabase에 시각화 대시보드를 구축하여 어뷰저 관련 주요 지표를 실시간으로 모니터링할 수 있는 환경을 마련하였다.</p>
+      <p class="card-desc">SQL 기반 집계 쿼리를 설계하고 시각화 대시보드를 구축하여 어뷰저 관련 주요 지표를 실시간으로 모니터링할 수 있는 환경을 마련하였다.</p>
       <div class="card-tags">
         <span class="card-tag">SQL</span>
         <span class="card-tag">BigQuery</span>
-        <span class="card-tag">Metabase</span>
         <span class="card-tag">대시보드</span>
       </div>
-    </div>
+    </a>
 
-    <div class="card">
+    <a href="projects/referral.html" class="card">
       <div class="card-header">
         <span class="card-title">레퍼럴 어뷰징 방지 기준 설계</span>
         <span class="card-badge badge-green">정책 설계</span>
@@ -283,7 +285,7 @@
         <span class="card-tag">분포 분석</span>
         <span class="card-tag">임계값 설계</span>
       </div>
-    </div>
+    </a>
 
   </div>
 </div>
