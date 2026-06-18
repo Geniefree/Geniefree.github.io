@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>레퍼럴 어뷰징 모니터링 파이프라인 · 유진희</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: #fafafa; color: #1a1a1a; line-height: 1.7;
+    }
+    a { color: inherit; text-decoration: none; }
+    nav {
+      background: white; border-bottom: 0.5px solid #e8e8e8;
+      padding: 0 40px; display: flex; align-items: center;
+      justify-content: space-between; height: 56px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-name { font-size: 15px; font-weight: 500; }
+    .nav-back { font-size: 13px; color: #888; }
+    .nav-back:hover { color: #1a1a1a; }
+    .hero {
+      background: white; border-bottom: 0.5px solid #e8e8e8;
+      padding: 56px 40px 48px; max-width: 760px; margin: 0 auto;
+    }
+    .breadcrumb { font-size: 12px; color: #aaa; margin-bottom: 20px; display: flex; align-items: center; gap: 6px; }
+    .breadcrumb a { color: #888; }
+    .breadcrumb a:hover { color: #185FA5; }
+    .badge { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: 10px; margin-bottom: 14px; background: #E6F1FB; color: #185FA5; }
+    .hero h1 { font-size: 24px; font-weight: 500; margin-bottom: 10px; line-height: 1.4; }
+    .hero .subtitle { font-size: 14px; color: #666; margin-bottom: 24px; }
+    .meta-row { display: flex; gap: 24px; flex-wrap: wrap; padding-top: 20px; border-top: 0.5px solid #e8e8e8; }
+    .meta-label { font-size: 11px; color: #aaa; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .meta-value { font-size: 13px; color: #333; font-weight: 500; }
+    .content { max-width: 760px; margin: 0 auto; padding: 48px 40px; }
+    .section { margin-bottom: 48px; }
+    .section-title { font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.8px; color: #aaa; margin-bottom: 16px; }
+    p { font-size: 15px; color: #333; line-height: 1.75; margin-bottom: 14px; }
+    p:last-child { margin-bottom: 0; }
+    .highlight-box {
+      background: #E6F1FB; border-left: 3px solid #185FA5;
+      border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;
+    }
+    .highlight-box p { color: #0C447C; margin-bottom: 0; font-size: 14px; }
+    .metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+    .metric-card { background: white; border: 0.5px solid #e8e8e8; border-radius: 10px; padding: 16px 18px; }
+    .metric-title { font-size: 12px; font-weight: 500; color: #185FA5; margin-bottom: 6px; }
+    .metric-desc { font-size: 13px; color: #555; line-height: 1.6; }
+    .method-list { list-style: none; padding: 0; margin: 16px 0; }
+    .method-list li { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid #f0f0f0; font-size: 14px; color: #333; }
+    .method-list li:last-child { border-bottom: none; }
+    .method-num { min-width: 22px; height: 22px; background: #E6F1FB; color: #185FA5; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; margin-top: 1px; }
+    .takeaway { background: white; border: 0.5px solid #e8e8e8; border-radius: 12px; padding: 24px; margin-top: 16px; }
+    .takeaway-title { font-size: 13px; font-weight: 500; color: #1a1a1a; margin-bottom: 8px; }
+    .takeaway p { font-size: 14px; color: #555; }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .tag { font-size: 12px; padding: 4px 12px; border-radius: 4px; background: #f5f5f5; color: #555; border: 0.5px solid #e8e8e8; }
+    footer { border-top: 0.5px solid #e8e8e8; background: white; padding: 24px 40px; text-align: center; font-size: 13px; color: #aaa; }
+    footer a { color: #185FA5; }
+    @media (max-width: 600px) {
+      nav, .hero, .content { padding-left: 20px; padding-right: 20px; }
+      .metric-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="nav-name">유진희</a>
+  <a href="../index.html" class="nav-back">← 포트폴리오로 돌아가기</a>
+</nav>
+
+<div class="hero">
+  <div class="breadcrumb">
+    <a href="../index.html">포트폴리오</a>
+    <span>›</span>
+    <span>레퍼럴 어뷰징 모니터링 파이프라인</span>
+  </div>
+  <div class="badge">데이터 엔지니어링 · 자동화</div>
+  <h1>레퍼럴 어뷰징 모니터링 자동화:<br>일일 리포트 파이프라인 구축</h1>
+  <p class="subtitle">레퍼럴 어뷰징 주요 지표를 매일 자동으로 집계하고 보고하는 파이프라인을 설계·구축한 프로젝트</p>
+  <div class="meta-row">
+    <div class="meta-item">
+      <div class="meta-label">유형</div>
+      <div class="meta-value">실무 분석</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">기간</div>
+      <div class="meta-value">2026</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">소속</div>
+      <div class="meta-value">국내 모바일 리워드 플랫폼</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="section">
+    <p class="section-title">배경</p>
+    <p>레퍼럴 어뷰징 현황을 매일 수동으로 확인하는 방식은 운영 부담이 크고 이상 발생 시 대응이 늦어지는 문제가 있었다. 이를 해결하기 위해 주요 지표를 자동으로 집계하고 일별 리포트를 생성하는 파이프라인을 직접 설계하고 구축하였다.</p>
+    <div class="highlight-box">
+      <p>분석 쿼리 작성부터 자동화 파이프라인 구축, 대시보드 구현까지 전 과정을 단독으로 수행하였다. 권한 이슈 해결 과정에서 인프라 구조를 직접 파악하고 대응하였다.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">모니터링 지표</p>
+    <div class="metric-grid">
+      <div class="metric-card">
+        <div class="metric-title">일별 레퍼럴 활동량</div>
+        <div class="metric-desc">초대 발생 건수 및 보상 지급 현황을 일별로 집계하여 추이 모니터링</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">고초대 유저 현황</div>
+        <div class="metric-desc">기준값을 초과하는 초대 활동 유저를 일별로 식별하고 현황 추적</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">신규 가입자 품질 지표</div>
+        <div class="metric-desc">레퍼럴을 통해 유입된 신규 유저의 행동 품질을 집계하여 이상 여부 모니터링</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">보상 지급 이상 탐지</div>
+        <div class="metric-desc">정상 범위를 벗어난 보상 지급 패턴을 자동으로 플래깅하여 리포트에 포함</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">주요 작업</p>
+    <ul class="method-list">
+      <li>
+        <div class="method-num">1</div>
+        <div><strong>집계 쿼리 설계</strong> — 레퍼럴 관련 데이터를 여러 테이블에서 조인하여 주요 지표를 산출하는 SQL 쿼리를 작성하였다. 일별 자동 집계가 가능하도록 동적 날짜 조건을 적용하였다.</div>
+      </li>
+      <li>
+        <div class="method-num">2</div>
+        <div><strong>자동화 파이프라인 구축</strong> — 매일 정해진 시간에 쿼리가 실행되고 결과가 자동으로 리포트에 반영되는 파이프라인을 구축하였다. 스케줄링 및 실행 환경을 설정하였다.</div>
+      </li>
+      <li>
+        <div class="method-num">3</div>
+        <div><strong>권한 이슈 해결</strong> — 파이프라인 실행 중 데이터 접근 권한 오류가 발생하여, 인프라 구조를 파악하고 올바른 프로젝트 권한으로 전환하여 해결하였다.</div>
+      </li>
+      <li>
+        <div class="method-num">4</div>
+        <div><strong>대시보드 구현</strong> — 집계된 지표를 시각화하는 대시보드를 구축하여, 담당자가 별도 쿼리 없이 일별 현황을 확인할 수 있도록 하였다.</div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <p class="section-title">시사점</p>
+    <div class="takeaway">
+      <div class="takeaway-title">분석에서 자동화까지</div>
+      <p>단순히 분석 결과를 제공하는 것을 넘어, 운영팀이 매일 활용할 수 있는 자동화 시스템으로 연결하였다. 분석가가 인프라 구조를 이해하고 직접 파이프라인을 구축하는 경험을 통해, 분석과 엔지니어링의 경계를 넘나드는 실무 역량을 키웠다.</div>
+    </div>
+    <div class="takeaway" style="margin-top: 12px;">
+      <div class="takeaway-title">권한 이슈 대응</div>
+      <p>파이프라인 구축 과정에서 데이터 접근 권한 오류가 발생하였고, 인프라 담당팀 없이 직접 원인을 파악하고 해결하였다. 클라우드 데이터 환경에서 프로젝트별 권한 구조를 이해하는 것이 중요함을 배웠다.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">사용 기술 및 방법론</p>
+    <div class="tag-row">
+      <span class="tag">Python</span>
+      <span class="tag">SQL</span>
+      <span class="tag">BigQuery</span>
+      <span class="tag">Airflow</span>
+      <span class="tag">Cloud Run</span>
+      <span class="tag">Metabase</span>
+      <span class="tag">파이프라인 자동화</span>
+      <span class="tag">대시보드 구축</span>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p><a href="../index.html">← 포트폴리오로 돌아가기</a> &nbsp;·&nbsp; wlgmldb418@korea.ac.kr</p>
+</footer>
+
+</body>
+</html>
