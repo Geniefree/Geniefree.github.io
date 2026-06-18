@@ -238,7 +238,7 @@
     <p>문제는 이 가중치가 특정 광고 유형에만 비대칭적으로 적용되면서, 트래픽 다수를 차지하는 세그먼트에 낮은 가중치가 집중되는 구조가 형성된다는 점이었다.</p>
 
     <div class="highlight-box">
-      <p>실제 경매 로그가 기록되지 않는 시스템 제약 하에서, 관측 가능한 노출 데이터만을 활용하여 가중치 구조의 경쟁력 영향을 간접적으로 정량화하는 것이 핵심 과제였다.</p>
+      <p>실제 내부 로그에 대한 접근이 제한된 환경에서, 관측 가능한 데이터만을 활용하여 가중치 구조의 영향을 간접적으로 정량화하는 것이 핵심 과제였다.</p>
     </div>
   </div>
 
@@ -248,7 +248,7 @@
     <div class="stat-grid">
       <div class="stat-card">
         <div class="stat-label">노출 비중 변화</div>
-        <div class="stat-value">-12.5%p</div>
+        <div class="stat-value">유의미한 감소</div>
         <div class="stat-sub">통계적으로 유의 (p&lt;0.001)</div>
       </div>
       <div class="stat-card">
@@ -259,7 +259,7 @@
       <div class="stat-card">
         <div class="stat-label">경쟁력 지수</div>
         <div class="stat-value">기준치 미달</div>
-        <div class="stat-sub">일반형 대비 약 31% 불리</div>
+        <div class="stat-sub">일반형 대비 구조적으로 불리</div>
       </div>
     </div>
     <p>노출 감소는 통계적으로 유의하였으나 CTR 변화는 유의하지 않았다. 이는 노출 감소의 원인이 광고 자체의 품질 저하가 아닌, 가중치 구조로 인한 경쟁력 약화임을 시사한다. 트래픽 다수를 차지하는 세그먼트에 낮은 가중치가 집중 적용된 것이 구조적 원인으로 확인되었다.</p>
@@ -275,7 +275,7 @@
       </li>
       <li>
         <div class="method-num">2</div>
-        <div><strong>경쟁력 지수 설계</strong> — 세그먼트별 트래픽 비중과 개인화 가중치의 가중 평균으로 상품형 광고의 전체 평균 경쟁력을 정량화하는 지표를 설계하였다.</div>
+        <div><strong>경쟁력 지수 설계</strong> — 세그먼트별 트래픽 비중과 개인화 가중치의 가중 평균으로 특정 광고 유형의 전체 평균 경쟁력을 정량화하는 지표를 설계하였다.</div>
       </li>
       <li>
         <div class="method-num">3</div>
@@ -283,7 +283,7 @@
       </li>
       <li>
         <div class="method-num">4</div>
-        <div><strong>노출 분포 시뮬레이션</strong> — 경매 로그 없이 트래픽 비중과 가중치만으로 예상 노출 분포를 추정하고, 네 가지 가중치 후보안을 비교하였다.</div>
+        <div><strong>노출 분포 시뮬레이션</strong> — 내부 로그 없이 트래픽 비중과 가중치만으로 예상 노출 분포를 추정하고, 네 가지 가중치 후보안을 비교하였다.</div>
       </li>
     </ul>
   </div>
@@ -291,7 +291,7 @@
   <!-- 후보안 비교 -->
   <div class="section">
     <p class="section-title">가중치 후보안 비교</p>
-    <p>카테고리 불일치 패널티 완화를 공통 기반으로 네 가지 후보안을 설계하고 시뮬레이션으로 비교하였다.</p>
+    <p>가중치 구조 완화를 공통 기반으로 네 가지 후보안을 설계하고 시뮬레이션으로 비교하였다.</p>
     <table class="result-table">
       <thead>
         <tr>
@@ -336,7 +336,7 @@
     <p class="section-title">시사점 및 한계</p>
     <div class="takeaway">
       <div class="takeaway-title">분석 프레임워크의 의의</div>
-      <p>실제 경매 로그가 없는 제약 하에서 관측 데이터만으로 가중치 구조의 경쟁력 영향을 정량화하는 방법론을 제시하였다. 경쟁력 지수와 분포 이탈 지수 기반 시뮬레이션 접근은 유사 구조의 광고 시스템에도 적용 가능하다.</p>
+      <p>실제 내부 로그에 대한 접근이 제한된 환경에서 관측 데이터만으로 가중치 구조의 경쟁력 영향을 정량화하는 방법론을 제시하였다. 경쟁력 지수와 분포 이탈 지수 기반 시뮬레이션 접근은 유사 구조의 광고 시스템에도 적용 가능하다.</p>
     </div>
     <div class="takeaway" style="margin-top: 12px;">
       <div class="takeaway-title">한계 및 향후 과제</div>
