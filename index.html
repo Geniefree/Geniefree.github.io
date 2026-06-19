@@ -172,6 +172,7 @@
 <nav>
   <span class="nav-name">유진희</span>
   <div class="nav-links">
+    <a href="#about">소개</a>
     <a href="#projects">프로젝트</a>
     <a href="#research">연구</a>
     <a href="#skills">스킬</a>
@@ -184,6 +185,7 @@
   <img src="profile_image.jpeg" alt="유진희 프로필 사진" class="avatar" />
   <h1>유진희</h1>
   <p class="subtitle">Data Analyst · 고려대학교 통계학과 석사과정</p>
+  <p style="font-size: 14px; color: #555; margin-bottom: 20px; line-height: 1.7;">데이터를 통해 문제를 발견하고, 분석과 AI를 활용해 더 나은 의사결정을 만드는 분석가입니다.</p>
   <div class="tags">
     <span class="tag purple">Python</span>
     <span class="tag teal">SQL · BigQuery</span>
@@ -198,15 +200,49 @@
   </div>
 </div>
 
+<!-- About -->
+<div class="section" id="about">
+  <p class="section-label">About</p>
+  <div style="background: white; border: 0.5px solid #e8e8e8; border-radius: 12px; padding: 28px 32px;">
+    <p style="font-size: 15px; color: #333; line-height: 1.85; margin-bottom: 16px;">
+      광고 개인화, 이상 탐지, 타겟팅 분석 프로젝트를 수행하며 데이터를 통해 문제를 정의하고 실제 의사결정으로 연결하는 경험을 쌓았습니다.
+    </p>
+    <p style="font-size: 15px; color: #333; line-height: 1.85; margin-bottom: 24px;">
+      최근에는 Claude, ChatGPT 등 생성형 AI를 분석 업무에 적극 활용하며 분석 생산성과 의사결정 과정을 개선하는 방법에 관심을 가지고 있습니다.
+    </p>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+      <div>
+        <p style="font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.8px; color: #aaa; margin-bottom: 12px;">Currently Interested In</p>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-size: 13px; color: #555;">· Recommender Systems & Personalization</span>
+          <span style="font-size: 13px; color: #555;">· Anomaly Detection</span>
+          <span style="font-size: 13px; color: #555;">· Analytics Engineering</span>
+          <span style="font-size: 13px; color: #555;">· Generative AI for Analytics</span>
+        </div>
+      </div>
+      <div>
+        <p style="font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.8px; color: #aaa; margin-bottom: 12px;">How I Work</p>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-size: 13px; color: #555;">· 데이터로 현상을 설명하는 것에서 끝나지 않고 실행 가능한 액션까지 연결</span>
+          <span style="font-size: 13px; color: #555;">· Claude, ChatGPT를 활용해 가설 탐색과 분석 생산성 향상</span>
+          <span style="font-size: 13px; color: #555;">· 복잡한 분석 결과를 이해하기 쉬운 문서와 시각화로 정리</span>
+          <span style="font-size: 13px; color: #555;">· 빠르게 실험하고 검증하는 방식 선호</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- 프로젝트 -->
 <div class="section" id="projects">
-  <p class="section-label">프로젝트</p>
+  <p class="section-label">Featured Projects</p>
   <div class="cards">
 
     <a href="projects/ad-personalization.html" class="card">
       <div class="card-header">
         <span class="card-title">광고 개인화 추천 가중치 분석</span>
-        <span class="card-badge badge-purple">추천 시스템</span>
+        <span class="card-badge badge-purple">Personalization</span>
       </div>
       <p class="card-desc">광고 랭킹 모델 배포 후 특정 광고 유형의 노출 이상을 발견하고, 세그먼트별 시뮬레이션을 통해 가중치 후보안을 비교·최적화하여 개선안을 제안하였다.</p>
       <div class="card-tags">
@@ -245,6 +281,13 @@
         <span class="card-tag">로직 설계</span>
       </div>
     </a>
+
+  </div>
+</div>
+
+<div class="section">
+  <p class="section-label">Other Projects</p>
+  <div class="cards">
 
     <a href="projects/blacklist.html" class="card">
       <div class="card-header">
@@ -312,19 +355,31 @@
       </div>
     </a>
 
+    <a href="projects/mlops.html" class="card">
+      <div class="card-header">
+        <span class="card-title">USD/KRW 환율 예측 MLOps 구현</span>
+        <span class="card-badge badge-blue">MLOps · 금융</span>
+      </div>
+      <p class="card-desc">글로벌 금융자산 1분봉 데이터를 실시간으로 수집·전처리하고 PostgreSQL에 적재하는 파이프라인을 설계하였다. RandomForest 기반 환율 방향 예측 모델 및 Dash 대시보드 개발에 참여하였다.</p>
+      <div class="card-tags">
+        <span class="card-tag">Python</span>
+        <span class="card-tag">PostgreSQL</span>
+        <span class="card-tag">Docker</span>
+        <span class="card-tag">MLOps</span>
+      </div>
+    </a>
+
   </div>
 </div>
-
-<!-- 학술 연구 -->
 <div class="section" id="research">
   <p class="section-label">학술 연구</p>
 
-  <div class="research-item">
+  <a href="projects/battery-research.html" class="research-item" style="display: block; text-decoration: none; color: inherit; transition: border-color 0.15s;" onmouseover="this.style.borderColor='#c07b28'" onmouseout="this.style.borderColor='#e8e8e8'">
     <p class="research-title">인과추론 기반 배터리 충전 정책의 최적 제어</p>
     <p class="research-meta">고려대학교 · 2025.02 – 현재</p>
     <p class="research-desc">인과추론을 활용해 리튬이온 배터리 충전 프로토콜을 평가하고, 널리 사용되는 전략이 수명을 항상 극대화하지 않을 수 있음을 보였다.</p>
     <span class="award">🏆 한국통계학회 포스터상</span>
-  </div>
+  </a>
 
   <div class="research-item">
     <p class="research-title">DM-CLIP: Efficient CLIP via Knowledge Distillation from Transformer to Mamba</p>
@@ -358,11 +413,11 @@
     <div class="skill-card">
       <p class="skill-category">머신러닝 / 통계</p>
       <div class="skill-items">
-        <span class="skill-item">추천 시스템</span>
-        <span class="skill-item">이상 탐지</span>
-        <span class="skill-item">인과추론</span>
+        <span class="skill-item">Personalization</span>
+        <span class="skill-item">Anomaly Detection</span>
+        <span class="skill-item">Causal Inference</span>
+        <span class="skill-item">Experiment Design</span>
         <span class="skill-item">베이지안</span>
-        <span class="skill-item">NLP</span>
       </div>
     </div>
     <div class="skill-card">

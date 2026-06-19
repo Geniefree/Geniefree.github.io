@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>인과추론 기반 배터리 충전 정책 연구 · 유진희</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: #fafafa; color: #1a1a1a; line-height: 1.7;
+    }
+    a { color: inherit; text-decoration: none; }
+    nav {
+      background: white; border-bottom: 0.5px solid #e8e8e8;
+      padding: 0 40px; display: flex; align-items: center;
+      justify-content: space-between; height: 56px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-name { font-size: 15px; font-weight: 500; }
+    .nav-back { font-size: 13px; color: #888; }
+    .nav-back:hover { color: #1a1a1a; }
+    .hero {
+      background: white; border-bottom: 0.5px solid #e8e8e8;
+      padding: 56px 40px 48px; max-width: 760px; margin: 0 auto;
+    }
+    .breadcrumb { font-size: 12px; color: #aaa; margin-bottom: 20px; display: flex; align-items: center; gap: 6px; }
+    .breadcrumb a { color: #888; }
+    .badge { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: 10px; margin-bottom: 14px; background: #FAEEDA; color: #633806; }
+    .award-badge { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: 10px; margin-bottom: 14px; margin-left: 6px; background: #FAEEDA; color: #633806; }
+    .hero h1 { font-size: 24px; font-weight: 500; margin-bottom: 10px; line-height: 1.4; }
+    .hero .subtitle { font-size: 14px; color: #666; margin-bottom: 24px; }
+    .meta-row { display: flex; gap: 24px; flex-wrap: wrap; padding-top: 20px; border-top: 0.5px solid #e8e8e8; }
+    .meta-label { font-size: 11px; color: #aaa; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .meta-value { font-size: 13px; color: #333; font-weight: 500; }
+    .content { max-width: 760px; margin: 0 auto; padding: 48px 40px; }
+    .section { margin-bottom: 48px; }
+    .section-title { font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.8px; color: #aaa; margin-bottom: 16px; }
+    p { font-size: 15px; color: #333; line-height: 1.75; margin-bottom: 14px; }
+    p:last-child { margin-bottom: 0; }
+    .highlight-box {
+      background: #FAEEDA; border-left: 3px solid #c07b28;
+      border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;
+    }
+    .highlight-box p { color: #633806; margin-bottom: 0; font-size: 14px; }
+    .method-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 16px 0; }
+    .method-card { background: white; border: 0.5px solid #e8e8e8; border-radius: 10px; padding: 16px; }
+    .method-name { font-size: 13px; font-weight: 500; color: #633806; margin-bottom: 6px; }
+    .method-desc { font-size: 12px; color: #555; line-height: 1.6; }
+    .method-list { list-style: none; padding: 0; margin: 16px 0; }
+    .method-list li { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid #f0f0f0; font-size: 14px; color: #333; }
+    .method-list li:last-child { border-bottom: none; }
+    .method-num { min-width: 22px; height: 22px; background: #FAEEDA; color: #633806; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; margin-top: 1px; }
+    .result-box { background: white; border: 0.5px solid #e8e8e8; border-radius: 12px; padding: 20px 24px; margin: 16px 0; }
+    .result-title { font-size: 13px; font-weight: 500; color: #1a1a1a; margin-bottom: 8px; }
+    .result-desc { font-size: 14px; color: #555; line-height: 1.7; }
+    .takeaway { background: white; border: 0.5px solid #e8e8e8; border-radius: 12px; padding: 24px; margin-top: 16px; }
+    .takeaway-title { font-size: 13px; font-weight: 500; color: #1a1a1a; margin-bottom: 8px; }
+    .takeaway p { font-size: 14px; color: #555; }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .tag { font-size: 12px; padding: 4px 12px; border-radius: 4px; background: #f5f5f5; color: #555; border: 0.5px solid #e8e8e8; }
+    footer { border-top: 0.5px solid #e8e8e8; background: white; padding: 24px 40px; text-align: center; font-size: 13px; color: #aaa; }
+    footer a { color: #633806; }
+    @media (max-width: 600px) {
+      nav, .hero, .content { padding-left: 20px; padding-right: 20px; }
+      .method-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="nav-name">유진희</a>
+  <a href="../index.html" class="nav-back">← 포트폴리오로 돌아가기</a>
+</nav>
+
+<div class="hero">
+  <div class="breadcrumb">
+    <a href="../index.html">포트폴리오</a>
+    <span>›</span>
+    <span>인과추론 기반 배터리 충전 정책 연구</span>
+  </div>
+  <div class="badge">학술 연구 · 인과추론</div>
+  <span class="award-badge">🏆 한국통계학회 포스터상</span>
+  <h1>Optimal Battery Charging Strategies<br>Informed by Causal Inference</h1>
+  <p class="subtitle">인과추론 방법론(DR, SBW)을 적용하여 리튬이온 배터리 충전 프로토콜이 수명에 미치는 인과적 효과를 추정하고, 기존 최적 프로토콜에 이의를 제기한 연구</p>
+  <div class="meta-row">
+    <div class="meta-item">
+      <div class="meta-label">유형</div>
+      <div class="meta-value">학술 연구 (공동 1저자)</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">기간</div>
+      <div class="meta-value">2025.02 – 현재</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">소속</div>
+      <div class="meta-value">고려대학교 통계학과</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="section">
+    <p class="section-title">연구 배경</p>
+    <p>급속 충전은 배터리 수명을 단축시키는 것으로 알려져 있지만, 기존 머신러닝 기반 연구의 대부분은 공변량(covariate) 불균형을 고려하지 않아 편향된 결과를 초래한다는 한계가 있었다. 특정 충전 전략의 효과가 공변량 불균형에 의해 교란될 수 있어, 인과적 효과를 올바르게 추정하기 위한 방법론이 필요하였다.</p>
+    <p>본 연구는 Attia(2020)의 배터리 충전 데이터셋을 기반으로, Doubly Robust(DR) 추정량과 Stable Balancing Weights(SBW)를 적용하여 공변량 불균형을 조정하고 충전 프로토콜의 인과적 효과를 추정하였다.</p>
+    <div class="highlight-box">
+      <p>기존 연구에서 최적으로 알려진 (M, M, M) 프로토콜이 항상 수명을 극대화하지 않는다는 것을 인과추론을 통해 밝혔다. 하강 전류 패턴(H→M→L)이 일관되게 더 나은 결과를 보였다.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">데이터 및 설계</p>
+    <ul class="method-list">
+      <li>
+        <div class="method-num">1</div>
+        <div><strong>데이터</strong> — Attia(2020) 데이터셋 기반. 5단계 Constant Current + 1단계 Constant Voltage 구조의 224개 충전 프로토콜. CC1~CC3 전류 수준을 Low(L), Medium(M), High(H)로 이산화하여 분석하였다.</div>
+      </li>
+      <li>
+        <div class="method-num">2</div>
+        <div><strong>처치 및 결과 변수 정의</strong> — 충전 프로토콜 선택을 처치(treatment), 배터리 사이클 수명을 결과(outcome)로 정의하였다. Attia(2020)의 (M, M, M) 프로토콜을 대조군(control)으로 설정하였다.</div>
+      </li>
+      <li>
+        <div class="method-num">3</div>
+        <div><strong>교란 변수 통제</strong> — 쿨롱 효율(CE), dQ/dV, 온도 등 배터리 열화의 예측 변수이자 충전 정책과 성능 모두에 영향을 미치는 교란 변수를 식별하고 조정하였다.</div>
+      </li>
+      <li>
+        <div class="method-num">4</div>
+        <div><strong>두 가지 분석 프레임워크</strong> — Overlapping(CC1~CC3 중 하나라도 다른 경우) 및 Non-overlapping(전체 단계 기준 L/M/H 그룹화) 두 가지 프레임워크를 설계하여 분석하였다.</div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <p class="section-title">인과추론 방법론</p>
+    <div class="method-grid">
+      <div class="method-card">
+        <div class="method-name">IPW</div>
+        <div class="method-desc">성향 점수 기반 역확률 가중치 재조정. 극단값 존재 시 분산이 커지는 한계가 있음.</div>
+      </div>
+      <div class="method-card">
+        <div class="method-name">DR (Doubly Robust)</div>
+        <div class="method-desc">성향 점수 모델 또는 결과 모델 중 하나만 올바르면 일치 추정. 모형 오지정에 강건함.</div>
+      </div>
+      <div class="method-card">
+        <div class="method-name">SBW</div>
+        <div class="method-desc">모형 없이 최적화 기반으로 공변량 균형을 직접 달성. 모멘트 제약으로 정밀한 균형 확보.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">주요 결과</p>
+    <div class="result-box">
+      <div class="result-title">공변량 균형 달성</div>
+      <div class="result-desc">IPW와 SBW 모두 가중치 적용 후 공변량 분포 균형이 개선되었으며, SBW가 모멘트 제약을 통해 더 정밀한 균형을 달성하였다. 이는 교란 편향이 완화되었음을 확인한다.</div>
+    </div>
+    <div class="result-box" style="margin-top: 12px;">
+      <div class="result-title">기존 최적 프로토콜에 대한 도전</div>
+      <div class="result-desc">Overlapping 프레임워크에서 (H, H, L) 프로토콜이 DR과 SBW 모두에서 가장 높은 ATE를 보였다. Non-overlapping 프레임워크에서는 (H, M, L) 프로토콜이 일관되게 양의 ATE를 기록하였다. 하강 전류 패턴(H→M→L)이 기존 (M, M, M) 대비 배터리 수명을 더 효과적으로 연장하는 것으로 나타났다.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">시사점</p>
+    <div class="takeaway">
+      <div class="takeaway-title">인과추론으로 기존 통념에 도전</div>
+      <p>단순 상관관계 분석에서 최적으로 알려진 프로토콜이 인과적 관점에서는 최적이 아닐 수 있음을 밝혔다. 공변량 불균형을 고려하지 않은 분석이 얼마나 편향된 결론을 낼 수 있는지를 실증적으로 보여준 연구이다.</div>
+    </div>
+    <div class="takeaway" style="margin-top: 12px;">
+      <div class="takeaway-title">방법론 선택의 중요성</div>
+      <p>동일한 데이터라도 IPW, DR, SBW 중 어떤 방법을 적용하느냐에 따라 추정의 안정성과 신뢰성이 달라진다. 특히 SBW의 모형 비의존적 접근이 실무 데이터에서 강점을 가진다는 점을 확인하였다.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">사용 기술 및 방법론</p>
+    <div class="tag-row">
+      <span class="tag">R</span>
+      <span class="tag">Python</span>
+      <span class="tag">인과추론</span>
+      <span class="tag">Doubly Robust Estimation</span>
+      <span class="tag">Stable Balancing Weights</span>
+      <span class="tag">IPW</span>
+      <span class="tag">성향 점수 모델</span>
+      <span class="tag">공변량 균형</span>
+      <span class="tag">ATE 추정</span>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p><a href="../index.html">← 포트폴리오로 돌아가기</a> &nbsp;·&nbsp; wlgmldb418@korea.ac.kr</p>
+</footer>
+
+</body>
+</html>
